@@ -28,7 +28,7 @@ public class ServerOutput implements Runnable {
 			else return true;
 		}	
 		catch(Exception e) {
-			System.err.println("An error occured trying to remove a socket from the array");
+			System.err.println("An error occured whilst trying to remove a socket from the array");
 			e.printStackTrace();
 			return false;
 		}
@@ -49,12 +49,7 @@ public class ServerOutput implements Runnable {
 						System.out.println("incomming message: " + msg);
 						
 						if(!msg.contains("$$$")) {
-							for(Socket s : ChatServer.getConnectedSockets()) {
-								PrintWriter sout = new PrintWriter(s.getOutputStream());
-								sout.println(msg);
-								sout.flush();
-								System.out.println("Message sent to: " + s.getLocalAddress().getHostName());
-							}
+							ChatServer.outputMsgToSockets(msg);
 						}
 						else {
 							String cmd = msg.substring(3);
@@ -76,4 +71,6 @@ public class ServerOutput implements Runnable {
 				}		
 		}
 	}
+	
+
 }
