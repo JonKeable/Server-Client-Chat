@@ -52,16 +52,25 @@ public class ChatServer {
 					nameSet = true;
 				}
 			}
-			System.out.println(username);
+			//System.out.println(username);
 			connectedUsers.add(username);
-			
+			sendUserList();
+		}
+		catch(Exception e) {
+			System.err.println("An error occured trying to add a username!");
+			e.printStackTrace();
+		}
+	}
+	
+	private static void sendUserList() {
+		try {
 			String usersStr = "";
 			for(String u: connectedUsers) {
 				usersStr = usersStr.concat("&");
 				usersStr = usersStr.concat(u);
 			}
 			
-			System.out.println("Connected users: " + usersStr);
+			//System.out.println("Connected users: " + usersStr);
 			String outMsg = "$$$usrs".concat(usersStr);
 			System.out.println("Sending Msg: " + outMsg);
 			
@@ -71,14 +80,15 @@ public class ChatServer {
 				out.flush();
 			}
 		}
-		catch(Exception e) {
-			System.err.println("An error occured trying to add a username!");
-			e.printStackTrace();
+		catch(IOException ioE) {
+			System.err.println("Error trying to send list of connected users");
+			ioE.printStackTrace();
 		}
 	}
 	
 	private static void removeUser(String user) throws IOException {
 		connectedUsers.remove(user);
+		sendUserList();
 	}
 	
 	public static void cmd(String cmd) throws IOException {
